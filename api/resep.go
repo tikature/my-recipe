@@ -5,7 +5,7 @@ import (
 	"net/http"
 	"strconv"
 
-	"my-recipe/internal/data"
+	"my-recipe/pkg/data"
 )
 
 func Handler(w http.ResponseWriter, r *http.Request) {

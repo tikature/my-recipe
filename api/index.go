@@ -5,8 +5,8 @@ import (
 	"net/http"
 	"strings"
 
-	"my-recipe/internal/data"
-	"my-recipe/internal/models"
+	"my-recipe/pkg/data"
+	"my-recipe/pkg/models"
 )
 
 type PageData struct {
