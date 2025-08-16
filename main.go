@@ -20,11 +20,11 @@ func main() {
 	http.HandleFunc("/resep/", handlers.DetailHandler)
 
 	// PORT dari environment
-	port := os.Getenv("PORT")
-	if port == "" {
-		port = "8080" // lokal
-	}
+    port := os.Getenv("PORT")
+    if port == "" {
+        port = "3000" // default kalau PORT belum ada
+    }
 
-	log.Printf("Server berjalan di http://localhost:%s", port)
-	log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Println("Server running on port", port)
+    log.Fatal(http.ListenAndServe(":"+port, nil))
 }
