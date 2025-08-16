@@ -47,9 +47,7 @@ This repository contains a Go-based web application called **ResePin**, which se
 <div align="center">
 
 By **Dewi Atika Muthi**  
-📍 _Informatics Student, Telkom University_  
 📧 **Email:** detikaa10@gmail.com  
 🌐 **GitHub:** [@tikature](https://github.com/tikature)  
 
-💬 *"Design with simplicity, build with purpose."*
 </div>
