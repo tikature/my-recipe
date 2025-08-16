@@ -3,7 +3,6 @@ package main
 import (
 	"log"
 	"net/http"
-	"os"
 
 	"my-recipe/internal/data"
 	"my-recipe/internal/handlers"
@@ -12,19 +11,18 @@ import (
 func main() {
 	log.Printf("Starting server with %d recipes loaded", len(data.ResepData))
 
-	// Static files
+	// static
 	http.Handle("/static/", http.StripPrefix("/static/", http.FileServer(http.Dir("static"))))
 
-	// Routes
+	// routes
 	http.HandleFunc("/", handlers.HomeHandler)
 	http.HandleFunc("/resep/", handlers.DetailHandler)
 
-	// PORT dari environment
-    port := os.Getenv("PORT")
-    if port == "" {
-        port = "3000" // default kalau PORT belum ada
-    }
+	port := os.Getenv("PORT")
+	if port == "" {
+		port = "8080" // lokal
+	}
 
-	log.Println("Server running on port", port)
-    log.Fatal(http.ListenAndServe(":"+port, nil))
+	log.Printf("Server berjalan di http://localhost:%s", port)
+	log.Fatal(http.ListenAndServe(":"+port, nil))
 }

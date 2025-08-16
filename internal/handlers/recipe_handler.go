@@ -6,8 +6,8 @@ import (
 	"strconv"
 	"strings"
 
-	"my-recipe/pkg/data"
-	"my-recipe/pkg/models"
+	"my-recipe/internal/data"
+	"my-recipe/internal/models"
 )
 
 type PageData struct {

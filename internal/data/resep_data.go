@@ -1,6 +1,6 @@
 package data
 
-import "my-recipe/pkg/models"
+import "my-recipe/internal/models"
 
 var ResepData = []models.Resep{
 
