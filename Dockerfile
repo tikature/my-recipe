@@ -3,6 +3,9 @@ FROM golang:1.22 AS builder
 
 WORKDIR /app
 
+# Set Go proxy biar tidak gagal fetch
+ENV GOPROXY=https://proxy.golang.org,direct
+
 # Copy go.mod & go.sum dulu biar cache dependencies
 COPY go.mod go.sum ./
 RUN go mod download
