@@ -3,6 +3,7 @@ package main
 import (
 	"log"
 	"net/http"
+	"os"
 
 	"my-recipe/internal/data"
 	"my-recipe/internal/handlers"
@@ -20,7 +21,7 @@ func main() {
 
 	port := os.Getenv("PORT")
 	if port == "" {
-		port = "8080" // lokal
+		port = "8080"
 	}
 
 	log.Printf("Server berjalan di http://localhost:%s", port)
