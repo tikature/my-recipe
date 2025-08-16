@@ -6,13 +6,12 @@
 
 ## 📝 Repository Description
 
-This repository contains a Go-based web application called **My-Recipe**, which serves as a digital cookbook. It includes:
+This repository contains a Go-based web application called **ResePin**, which serves as a digital cookbook. It includes:
 
 - A variety of Indonesian recipes with names, descriptions, ingredients, instructions, and images.
 - Organized folder structure for templates, static files (CSS, JS, images), and internal Go modules.
 - Go `net/http` server implementation.
 - Modularized code using handlers and services for better maintainability.
-- Ready-to-deploy setup for platforms like **Vercel** or **Netlify** (with Go build support).
 
 ---
 
