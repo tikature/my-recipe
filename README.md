@@ -29,6 +29,7 @@ This repository contains a Go-based web application called **ResePin**, which se
 <p align="center">
   <img src="captures/home-hp.png" height="200"/>
   <img src="captures/home2-lp.png" height="200"/>
+  <br>
   <img src="captures/home_lp.png" height="200"/>
   <img src="captures/home2-hp.png" height="200"/>
 </p>
