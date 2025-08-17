@@ -8,9 +8,12 @@ import (
 	"strings"
 )
 
+//go:embed public/*.html
 var templatesFS embed.FS
 
+//go:embed public/*
 var staticFS embed.FS
+
 
 // Struct untuk resep
 type Resep struct {
@@ -192,6 +195,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Template execution error: "+err.Error(), http.StatusInternalServerError)
 		return
 	}
+
 }
 
 // Handler untuk detail resep
