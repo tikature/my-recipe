@@ -10,6 +10,8 @@ import (
 
 var templatesFS embed.FS
 
+var staticFS embed.FS
+
 type Resep struct {
 	ID        int
 	Nama      string
@@ -99,15 +101,51 @@ type PageData struct {
 
 // Main handler untuk Vercel
 func Handler(w http.ResponseWriter, r *http.Request) {
-	// Route ke handler yang sesuai
-	switch {
-	case r.URL.Path == "/" || r.URL.Path == "/api":
-		homeHandler(w, r)
-	case strings.HasPrefix(r.URL.Path, "/api/resep/"):
-		detailHandler(w, r)
-	default:
-		notFoundHandler(w, r)
+	// Handle static files
+	if strings.HasPrefix(r.URL.Path, "/css/") || 
+	   strings.HasPrefix(r.URL.Path, "/js/") || 
+	   strings.HasPrefix(r.URL.Path, "/images/") ||
+	   strings.HasSuffix(r.URL.Path, ".png") ||
+	   strings.HasSuffix(r.URL.Path, ".jpg") ||
+	   strings.HasSuffix(r.URL.Path, ".ico") {
+		serveStatic(w, r)
+		return
 	}
+
+	// Route ke handler yang sesuai berdasarkan query parameter atau path
+	if strings.Contains(r.URL.RawQuery, "resep=") || strings.HasPrefix(r.URL.Path, "/resep/") {
+		detailHandler(w, r)
+	} else {
+		homeHandler(w, r)
+	}
+}
+
+// Handler untuk static files
+func serveStatic(w http.ResponseWriter, r *http.Request) {
+	// Remove leading slash
+	path := strings.TrimPrefix(r.URL.Path, "/")
+	
+	// Add public prefix
+	filePath := "public/" + path
+	
+	content, err := staticFS.ReadFile(filePath)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	
+	// Set content type based on file extension
+	if strings.HasSuffix(path, ".css") {
+		w.Header().Set("Content-Type", "text/css")
+	} else if strings.HasSuffix(path, ".js") {
+		w.Header().Set("Content-Type", "application/javascript")
+	} else if strings.HasSuffix(path, ".png") {
+		w.Header().Set("Content-Type", "image/png")
+	} else if strings.HasSuffix(path, ".jpg") || strings.HasSuffix(path, ".jpeg") {
+		w.Header().Set("Content-Type", "image/jpeg")
+	}
+	
+	w.Write(content)
 }
 
 // Handler untuk halaman utama
@@ -142,7 +180,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse template dari embedded filesystem
-	tmpl, err := template.ParseFS(templatesFS, "public/index.html")
+	tmpl, err := template.ParseFS(templatesFS, "templates/index.html")
 	if err != nil {
 		http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -157,9 +195,18 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 
 // Handler untuk detail resep
 func detailHandler(w http.ResponseWriter, r *http.Request) {
-	// Extract ID dari URL - untuk Vercel path akan jadi /api/resep/1
-	path := strings.TrimPrefix(r.URL.Path, "/api/resep/")
-	id, err := strconv.Atoi(path)
+	// Extract ID dari URL atau query parameter
+	var idStr string
+	
+	// Cek dari query parameter dulu (untuk Vercel routing)
+	if resepParam := r.URL.Query().Get("resep"); resepParam != "" {
+		idStr = resepParam
+	} else {
+		// Fallback ke path-based routing
+		idStr = strings.TrimPrefix(r.URL.Path, "/resep/")
+	}
+	
+	id, err := strconv.Atoi(idStr)
 	if err != nil {
 		notFoundHandler(w, r)
 		return
@@ -179,7 +226,7 @@ func detailHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	// Parse template dari embedded filesystem
-	tmpl, err := template.ParseFS(templatesFS, "public/detail.html")
+	tmpl, err := template.ParseFS(templatesFS, "templates/detail.html")
 	if err != nil {
 		http.Error(w, "Template error: "+err.Error(), http.StatusInternalServerError)
 		return
@@ -197,7 +244,7 @@ func notFoundHandler(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusNotFound)
 	
 	// Parse template dari embedded filesystem
-	tmpl, err := template.ParseFS(templatesFS, "public/404.html")
+	tmpl, err := template.ParseFS(templatesFS, "templates/404.html")
 	if err != nil {
 		http.Error(w, "404 - Page not found", http.StatusNotFound)
 		return
