@@ -7,8 +7,6 @@ import (
 	"strconv"
 	"strings"
 )
-
-//go:embed ../templates/*
 var templatesFS embed.FS
 
 // Struct untuk resep
