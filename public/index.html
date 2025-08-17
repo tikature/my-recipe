@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="id">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ResePin - Kumpulan Resep Indonesia</title>
+    <link rel="stylesheet" href="/public/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="icon" href="../static/image.png" type="image/png">
+</head>
+
+<body>
+    <!-- Floating Food Icons -->
+    <div class="floating-icons">
+        <div class="floating-icon" style="--delay: 0s; --duration: 15s;">🍜</div>
+        <div class="floating-icon" style="--delay: 2s; --duration: 18s;">🥘</div>
+        <div class="floating-icon" style="--delay: 4s; --duration: 20s;">🍛</div>
+        <div class="floating-icon" style="--delay: 6s; --duration: 16s;">🥗</div>
+        <div class="floating-icon" style="--delay: 8s; --duration: 22s;">🍳</div>
+        <div class="floating-icon" style="--delay: 3s; --duration: 19s;">🥙</div>
+        <div class="floating-icon" style="--delay: 7s; --duration: 17s;">🍲</div>
+    </div>
+
+    <div class="container">
+        <!-- Stats Banner -->
+        <div class="stats-banner">
+            <div class="stat-item">
+                <span class="stat-number">{{len .Recipes}}</span>
+                <span class="stat-label">Resep {{if .Query}}Ditemukan{{else}}Tersedia{{end}}</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">⭐</span>
+                <span class="stat-label">Resep Terpilih</span>
+            </div>
+            <div class="stat-divider"></div>
+            <div class="stat-item">
+                <span class="stat-number">🏆</span>
+                <span class="stat-label">Kualitas Terjamin</span>
+            </div>
+        </div>
+
+        <div class="header">
+            <h1>🍽️ ResePin</h1>
+            <p class="subtitle">Temukan cita rasa autentik Indonesia dalam setiap resep pilihan kami</p>
+            <form class="search-form" method="GET" action="/">
+                <input type="text" name="q" class="search-input" placeholder="Cari resep atau tag..."
+                    value="{{.Query}}">
+                <button type="submit" class="search-btn">🔍 Cari</button>
+            </form>
+        </div>
+
+        <!-- Quick Filter Tags -->
+        {{if not .Query}}
+        <div class="quick-filters">
+            <h3>🏷️ Filter Cepat:</h3>
+            <div class="filter-tags">
+                <a href="/?q=nasi" class="filter-tag">🍚 Nasi</a>
+                <a href="/?q=ayam" class="filter-tag">🐔 Ayam</a>
+                <a href="/?q=sayur" class="filter-tag">🥬 Sayur</a>
+                <a href="/?q=pedas" class="filter-tag">🌶️ Pedas</a>
+                <a href="/?q=sehat" class="filter-tag">💚 Sehat</a>
+                <a href="/?q=indonesia" class="filter-tag">🇮🇩 Tradisional</a>
+            </div>
+        </div>
+        {{end}}
+
+        {{if .Recipes}}
+        <!-- Recipe Count & Sort -->
+        <div class="recipes-header">
+            <h2>{{if .Query}}Hasil Pencarian "{{.Query}}"{{else}}Semua Resep{{end}}</h2>
+            <div class="recipe-count">
+                <span class="count-badge">{{len .Recipes}} resep</span>
+            </div>
+        </div>
+
+        <div class="recipes-grid">
+            {{range $index, $recipe := .Recipes}}
+            <div class="recipe-card" data-index="{{$index}}">
+                <!-- Recipe Badge -->
+                <div class="recipe-badge">
+                    {{if eq $index 0}}🏆 Populer{{else if eq $index 1}}⭐ Favorit{{else}}✨ Pilihan{{end}}
+                </div>
+
+                <div class="recipe-image-container">
+                    <img src="{{.Gambar}}" alt="{{.Nama}}" class="recipe-image"
+                        onerror="this.src='/static/images/placeholder.jpg'">
+                    <div class="recipe-overlay">
+                        <div class="recipe-time">⏱️ 30 min</div>
+                        <div class="recipe-difficulty">👨‍🍳 Mudah</div>
+                    </div>
+                </div>
+
+                <div class="recipe-card-content">
+                    <h3>{{.Nama}}</h3>
+                    <p class="recipe-description">{{.Deskripsi}}</p>
+                    <div class="recipe-meta">
+                        {{range .Tag}}
+                        <span class="tag">#{{.}}</span>
+                        {{end}}
+                    </div>
+                    <div class="recipe-preview">
+                        <strong>🥄 Bahan utama:</strong> {{index .Bahan 0}}{{if gt (len .Bahan) 1}}, {{index .Bahan
+                        1}}{{if gt (len .Bahan) 2}}...{{end}}{{end}}
+                    </div>
+
+                    <!-- Recipe Actions -->
+                    <div class="recipe-actions">
+                        <button class="action-btn favorite-btn" title="Tambah ke favorit">
+                            <span class="heart">🤍</span>
+                        </button>
+                        <a href="/resep/{{.ID}}" class="view-recipe">Lihat resep →</a>
+                        <button class="action-btn share-btn" title="Bagikan resep">
+                            <span>📤</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+            {{end}}
+        </div>
+
+        <!-- Load More Button -->
+        {{if gt (len .Recipes) 9}}
+        <div class="load-more-container">
+            <button class="load-more-btn" id="loadMoreBtn">
+                <span>Muat lebih banyak resep</span>
+                <div class="loading-dots">
+                    <span></span>
+                    <span></span>
+                    <span></span>
+                </div>
+            </button>
+            <p id="allLoadedMsg"
+                style="display:none; margin-top:10px; color: rgba(255, 255, 255, 0.9); font-style:italic;">
+                🎉 Semua resep sudah ditampilkan
+            </p>
+        </div>
+        {{end}}
+
+
+        {{else}}
+        <div class="no-results">
+            <div class="no-results-icon">🔍</div>
+            <h3>{{if .Query}}Tidak ada resep yang ditemukan untuk "{{.Query}}"{{else}}Tidak ada resep tersedia{{end}}
+            </h3>
+            <p>{{if .Query}}Coba kata kunci lain atau lihat semua resep{{else}}Silakan tambahkan resep baru{{end}}</p>
+            {{if .Query}}
+            <a href="/" class="back-to-all">Lihat Semua Resep</a>
+            {{end}}
+        </div>
+        {{end}}
+
+        <!-- Newsletter Section -->
+        <div class="newsletter-section">
+            <div class="newsletter-content">
+                <h3>🍳 Dapatkan Resep Terbaru!</h3>
+                <p>Berlangganan newsletter untuk mendapat resep-resep terbaru langsung di email Anda</p>
+                <div class="newsletter-form">
+                    <input type="email" placeholder="Masukkan email Anda..." class="newsletter-input">
+                    <button class="newsletter-btn">Berlangganan</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <div class="footer-content">
+                <p>Made with ❤️ & Go • Demo in-memory</p>
+                <div class="social-links">
+                    <a href="github.com/tikature" class="social-link">📘 Github</a>
+                    <a href="instagram.com/tikature" class="social-link">📷 Instagram</a>
+                    <a href="#" class="social-link">🐦 Twitter</a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="/public/js/main.js"></script>
+
+</body>
+
+</html>

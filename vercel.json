@@ -1,0 +1,21 @@
+{
+    "functions": {
+        "api/index.go": {
+            "runtime": "go1.x"
+        }
+    },
+    "routes": [
+        {
+            "src": "/static/(.*)",
+            "dest": "/static/$1"
+        },
+        {
+            "src": "/resep/(.*)",
+            "dest": "/api/index.go?resep=$1"
+        },
+        {
+            "src": "/(.*)",
+            "dest": "/api/index.go"
+        }
+    ]
+}
