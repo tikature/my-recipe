@@ -8,10 +8,10 @@ import (
 	"strings"
 )
 
-//go:embed public/*.html
+//go:embed ../public/*.html
 var templatesFS embed.FS
 
-//go:embed public/*
+//go:embed ../public/*
 var staticFS embed.FS
 
 
