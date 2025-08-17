@@ -1,21 +1,12 @@
 {
-    "functions": {
-        "api/index.go": {
-            "runtime": "go1.x"
-        }
-    },
-    "routes": [
+    "rewrites": [
         {
-            "src": "/static/(.*)",
-            "dest": "/static/$1"
+            "source": "/resep/:id",
+            "destination": "/api/index?resep=:id"
         },
         {
-            "src": "/resep/(.*)",
-            "dest": "/api/index.go?resep=$1"
-        },
-        {
-            "src": "/(.*)",
-            "dest": "/api/index.go"
+            "source": "/(.*)",
+            "destination": "/api/index"
         }
     ]
 }
